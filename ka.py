@@ -103,7 +103,7 @@ if file is not None:
 
     if all(col in df.columns for col in required_cols):
 
-        df["BMI"] = df.apply(lambda row: hitung_bmi(row["Height"], row["Weight"]), axis=1)
+        df["BMI"] = df.apply(lambda row: hitung_bmi(row["Weight"], row["Height"]), axis=1)
 
         st.subheader("📈 Distribusi BMI")
         fig, ax = plt.subplots(figsize=(7,5))
