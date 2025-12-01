@@ -3,13 +3,6 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# ============================================================
-#         APLIKASI BMI + DECISION TREE + VISUALISASI
-# ============================================================
-
-# ===========================
-# Node Class
-# ===========================
 class Node:
     def __init__(self, attribute=None, threshold=None, left=None, right=None, result=None):
         self.attribute = attribute
@@ -21,10 +14,6 @@ class Node:
     def is_leaf(self):
         return self.result is not None
 
-
-# ===========================
-# BUILD TREE BMI
-# ===========================
 def build_tree():
     root = Node("BMI", 18.5)
     root.left = Node(result="Underweight")
@@ -38,10 +27,6 @@ def build_tree():
 
     return root
 
-
-# ===========================
-# TRAVERSE TREE
-# ===========================
 def traverse_tree(node, data):
     if node.is_leaf():
         return node.result
@@ -55,10 +40,6 @@ def traverse_tree(node, data):
     else:
         return traverse_tree(node.right, data)
 
-
-# ===========================
-# PRINT TREE (string output)
-# ===========================
 def print_tree(node, indent=""):
     if node.is_leaf():
         return indent + f"└── {node.result}\n"
@@ -70,25 +51,13 @@ def print_tree(node, indent=""):
     s += print_tree(node.right, indent + "    ")
     return s
 
-
-# ===========================
-# BMI RUMUS
-# ===========================
 def hitung_bmi(berat, tinggi_cm):
     tinggi_m = tinggi_cm / 100
     return berat / (tinggi_m**2)
 
-
-# ============================================================
-#                     STREAMLIT UI
-# ============================================================
-
 st.title("📊 Aplikasi Klasifikasi BMI + Decision Tree")
 st.write("Unggah file Anda sendiri lalu lakukan analisis BMI dan visualisasi.")
 
-# ===========================
-# FILE UPLOADER
-# ===========================
 file = st.file_uploader("bmi.csv")
 
 if file is not None:
@@ -96,9 +65,6 @@ if file is not None:
     st.subheader("📄 Data Anda")
     st.dataframe(df)
 
-    # ============================================================
-    # Hitung BMI jika kolom berat & tinggi tersedia
-    # ============================================================
     required_cols = ["Height", "Weight"]
 
     if all(col in df.columns for col in required_cols):
@@ -113,9 +79,6 @@ if file is not None:
         ax.set_ylabel("Frekuensi")
         st.pyplot(fig)
 
-        # ============================================================
-        # Decision tree klasifikasi untuk seluruh data
-        # ============================================================
         tree = build_tree()
 
         df["Kategori_BMI"] = df["BMI"].apply(lambda x: traverse_tree(tree, {"BMI": x}))
@@ -126,9 +89,6 @@ if file is not None:
     else:
         st.warning("Kolom wajib: 'berat' dan 'tinggi' belum ada dalam file.")
 
-# ============================================================
-# Input manual BMI
-# ============================================================
 st.subheader("🧍 Perhitungan BMI Pasien (Input Manual)")
 
 berat = st.number_input("Berat (kg)", min_value=1.0)
