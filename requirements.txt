@@ -1,3 +1,6 @@
 streamlit
-matplotlib
+streamlit
 pandas
+matplotlib
+scikit-learn
+graphviz
