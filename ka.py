@@ -14,6 +14,8 @@ class Node:
     def is_leaf(self):
         return self.result is not None
 
+
+
 def build_tree():
     root = Node("BMI", 18.5)
     root.left = Node(result="Underweight")
@@ -40,6 +42,34 @@ def traverse_tree(node, data):
     else:
         return traverse_tree(node.right, data)
 
+def visualize_tree():
+    dot = """
+    digraph BMI_Tree {
+        rankdir=TB;
+        node [shape=box, style="rounded,filled", fontname="Arial"];
+
+        A [label="BMI < 18.5?", fillcolor="#D9EAF7"];
+        B [label="Underweight", fillcolor="#C6EFCE"];
+
+        C [label="BMI < 25?", fillcolor="#D9EAF7"];
+        D [label="Normal", fillcolor="#C6EFCE"];
+
+        E [label="BMI < 30?", fillcolor="#D9EAF7"];
+        F [label="Overweight", fillcolor="#FFE699"];
+        G [label="Obese", fillcolor="#F4CCCC"];
+
+        A -> B [label="Ya"];
+        A -> C [label="Tidak"];
+
+        C -> D [label="Ya"];
+        C -> E [label="Tidak"];
+
+        E -> F [label="Ya"];
+        E -> G [label="Tidak"];
+    }
+    """
+    return dot
+
 def print_tree(node, indent=""):
     if node.is_leaf():
         return indent + f"└── {node.result}\n"
@@ -51,12 +81,18 @@ def print_tree(node, indent=""):
     s += print_tree(node.right, indent + "    ")
     return s
 
-def hitung_bmi(berat, tinggi_cm):
-    tinggi_m = tinggi_cm / 100
-    return berat / (tinggi_m**2)
+def hitung_bmi(weight, height):
+    tinggi_m = height / 100
+    return weight / (tinggi_m**2)
+
+
+# ============================================================
+#                     STREAMLIT UI
+# ============================================================
 
 st.title("📊 Aplikasi Klasifikasi BMI + Decision Tree")
 st.write("Unggah file Anda sendiri lalu lakukan analisis BMI dan visualisasi.")
+
 
 file = st.file_uploader("bmi.csv")
 
@@ -85,6 +121,13 @@ if file is not None:
 
         st.subheader("📋 Hasil Kategori BMI")
         st.dataframe(df[["Height", "Weight", "BMI", "Kategori_BMI"]])
+
+
+        st.subheader("🌳 Struktur Pohon Decision Tree BMI")
+
+        tree = build_tree()
+        st.graphviz_chart(visualize_tree())
+
 
     else:
         st.warning("Kolom wajib: 'berat' dan 'tinggi' belum ada dalam file.")
